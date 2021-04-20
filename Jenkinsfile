@@ -21,7 +21,7 @@ pipeline {
       stages {
         stage("clone code from Git"){
             steps{
-               git credentialsId: 'Gitlab', url: 'https://gitlab.com/suryambose/cicd-maven.git'
+               git credentialsId: 'Gitlab', url: 'https://github.com/suryambose/CI-Docker-Maven.git'
               echo 'Clone the code from GitLab'
             }
         }
