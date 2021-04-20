@@ -1,0 +1,81 @@
+pipeline {
+    agent {
+        label "master"
+    }
+    tools {
+        maven "maven"
+    }
+	environment {
+        // This can be nexus3 or nexus2 server
+        NEXUS_VERSION = "nexus3"
+        // This can be http or https
+        NEXUS_PROTOCOL = "http"
+        // Where your Nexus is running
+        NEXUS_URL = "192.168.1.16:8081"
+        // Repository where we will upload the artifact
+       // NEXUS_REPOSITORY_RELEASES = "maven-releases"
+        //NEXUS_REPOSITORY_SNAPSHOTS = "maven-snapshots"
+        // Jenkins credential id to authenticate to Nexus OSS
+        NEXUS_CREDENTIAL_ID = "nexus"
+    }
+      stages {
+        stage("clone code from Git"){
+            steps{
+               git credentialsId: 'Gitlab', url: 'https://gitlab.com/suryambose/cicd-maven.git'
+              echo 'Clone the code from GitLab'
+            }
+        }
+       stage("Maven Build") {
+            steps {
+                    //bat 'mvn clean package -DskipTests=true'
+					 bat 'mvn -B -DskipTests clean package' 
+                }
+            }
+       stage('SonarQube analysis') 
+	   {
+	   steps{
+	   script{
+	   bat 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=62dfbab52a2ddcf8fbbf351f602fa264cb002ec5'
+    // some block
+}
+}
+}
+        stage('Nexus Repository') {
+            steps {
+                script {
+                    def pom = readMavenPom file: "pom.xml";
+					//newly added
+					def nexusRepoName=pom.version.endsWith("SNAPSHOT") ? "maven-snapshots" : "maven-releases"
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                        nexusArtifactUploader(
+                                nexusVersion: NEXUS_VERSION,
+                                protocol: NEXUS_PROTOCOL,
+                                nexusUrl: NEXUS_URL,
+                                groupId: pom.groupId,
+                                version: pom.version,
+                               // repository: NEXUS_REPOSITORY_RELEASES,
+								repository: nexusRepoName,
+                                credentialsId: NEXUS_CREDENTIAL_ID, 
+                                artifacts: [
+                                    [artifactId: pom.artifactId, 
+                                     classifier: '',
+                                     file: artifactPath,
+                                     type: pom.packaging],
+                                    [artifactId: pom.artifactId,
+                                     classifier: '',
+                                     file: "pom.xml", 
+                                     type: "pom"]]);	
+                      
+                    } else {
+                        error "*** File: ${artifactPath}, could not be found";
+                    }
+                }
+            }
+        }
+  }
+}
