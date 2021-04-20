@@ -25,7 +25,7 @@ pipeline {
               echo 'Clone the code from Github'
             }
         }
-       stage("Maven Build") {
+       stage("Maven Build and Package") {
             steps {
                     //bat 'mvn clean package -DskipTests=true'
 					 bat 'mvn -B -DskipTests clean package' 
