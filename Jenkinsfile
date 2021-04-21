@@ -31,6 +31,7 @@ pipeline {
     credentialsId: 'github_credentials',
     url: 'https://github.com/suryambose/CI-Docker-Maven.git'
   }
+  }
   stage("build & SonarQube analysis") {
             agent any
             steps {
@@ -39,7 +40,6 @@ pipeline {
               }
             }
           }
-      }
 	  }
 	  }
 		
