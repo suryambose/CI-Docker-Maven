@@ -28,8 +28,10 @@ pipeline {
 		//sonarqube
 		 stage('SonarQube analysis') {
     withSonarQubeEnv('sonarserver') {
+	steps{
       bat 'mvn clean package sonar:sonar'
     } // submitted SonarQube taskId is automatically attached to the pipeline context
+  }
   }
 	// No need to occupy a node
 stage("Quality Gate"){
