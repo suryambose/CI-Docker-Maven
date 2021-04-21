@@ -20,7 +20,7 @@ pipeline {
     }
       stages {
 		stage("Code Checkout from GitHub") {
-  steps { credentialsId: 'github',url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+  steps { credentialsId: 'github_credentials',url: 'https://github.com/suryambose/CI-Docker-Maven.git'
   }
   }
 stage('Sonarqube') {
