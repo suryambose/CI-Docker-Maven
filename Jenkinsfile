@@ -32,7 +32,7 @@ pipeline {
     }
     steps {
         withSonarQubeEnv('sonarserver') {
-            bat "${scannerHome}/bin/windows-x86-64"
+            bat "${scannerHome}/bin"
         }
         timeout(time: 10, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
