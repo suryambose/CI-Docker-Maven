@@ -20,10 +20,7 @@ pipeline {
     }
       stages {
 		stage("Code Checkout from GitHub") {
-  steps {
-   git branch: 'master',
-    credentialsId: 'github_credentials',
-    url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+  steps { credentialsId: 'github',url: 'https://github.com/suryambose/CI-Docker-Maven.git'
   }
   }
 stage('Sonarqube') {
@@ -32,7 +29,7 @@ stage('Sonarqube') {
     }
     steps {
         withSonarQubeEnv('sonarserver') {
-            bat "${scannerHome}/bin/sonar-scanner"
+            bat "${scannerHome}/bin/windows-x86-64"
         }
         timeout(time: 10, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
