@@ -25,7 +25,7 @@ pipeline {
               echo 'Clone the code from Github'
             }
         }
-		stage(Quality Gate Status Check)
+		stage("Quality Gate Status Check")
 		{
 		steps
 		{
