@@ -25,6 +25,20 @@ pipeline {
                echo 'Clone the code from Github'
             }
         }
+		//sonarqube
+		stage('Sonarqube') {
+    environment {
+        scannerHome = tool 'sonarserver'
+    }
+    steps {
+        withSonarQubeEnv('sonarserver') {
+            bat "${scannerHome}/bin/windows-x86-64"
+        }
+        timeout(time: 10, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
 	  }
 	  }
 		
