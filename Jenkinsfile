@@ -47,22 +47,7 @@ pipeline {
 		}
 		}
 		}	
-      // stage("Maven Build and Package") {
-        //    steps {
-          //          //bat 'mvn clean package -DskipTests=true'
-			//		 bat 'mvn -B -DskipTests clean package' 
-             //   }
-            //}
-       //stage('SonarQube analysis') 
-	   //{
-	   //steps{
-	   //script{
-	   //bat 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=62dfbab52a2ddcf8fbbf351f602fa264cb002ec5'
-    // some block
-//}
-//}
-//}
-        stage('Nexus Repository') {
+        stage("Nexus Repository") {
             steps {
                 script {
                     def pom = readMavenPom file: "pom.xml";
