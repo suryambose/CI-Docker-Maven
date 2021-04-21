@@ -29,7 +29,7 @@ pipeline {
       stage("build & SonarQube analysis") {
             agent any
             steps {
-              withSonarQubeEnv(credentialsId: 'sonar-api-key') {
+              withSonarQubeEnv('sonarserver') {
                 bat 'mvn clean package sonar:sonar'
               }
             }
