@@ -19,5 +19,11 @@ steps
 	}
 }
 }
+stage('Quality Gate')
+{
+steps{
+waitForQualityGate abortPipeline: true	
+}
+}
 }
 }
