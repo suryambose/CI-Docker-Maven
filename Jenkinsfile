@@ -31,7 +31,7 @@ stage('Sonarqube') {
         scannerHome = tool 'sonarserver'
     }
     steps {
-        withSonarQubeEnv(credentialsId: 'sonar-api-key') {
+        withSonarQubeEnv('sonarserver') {
             bat "${scannerHome}/bin/sonar-scanner"
         }
         timeout(time: 10, unit: 'MINUTES') {
