@@ -26,15 +26,21 @@ pipeline {
             }
         }
 		//sonarqube
-		    stage('SonarQube analysis') 
-	   {
-	   steps{
-	   script{
-	   bat 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=95ae44b1a71dc1a6355c3d092b7ae182a862a149'
-     some block
-   }
+		 stage('SonarQube analysis') {
+    withSonarQubeEnv('sonarserver') {
+      bat 'mvn clean package sonar:sonar'
+    } // submitted SonarQube taskId is automatically attached to the pipeline context
+  }
+	// No need to occupy a node
+stage("Quality Gate"){
+  timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+    if (qg.status != 'OK') {
+      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+    }
   }
 }
-	  }
-	  }
+}
+}
+
 		
