@@ -19,23 +19,20 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "nexus"
     }
       stages {
-		stage("Code Checkout from GitHub") {
-  steps { credentialsId: 'github_credentials',url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+        stage("clone code from Git"){
+            steps{
+               git credentialsId: 'github_credentials', url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+               echo 'Clone the code from Github'
+            }
+        }
+		//sonarqube
+		stage('SonarQube analysis') {
+		steps{
+    withSonarQubeEnv(credentialsId: 'sonar-api-key')  { // You can override the credential to be used
+      bat 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+    }
   }
   }
-stage('Sonarqube') {
-    environment {
-        scannerHome = tool name: 'sonarserver', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-    }
-    steps {
-        withSonarQubeEnv('sonarserver') {
-            bat "${scannerHome}/bin"
-        }
-        timeout(time: 10, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
-        }
-    }
-}
 	  }
 	  }
 		
