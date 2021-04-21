@@ -25,8 +25,14 @@ pipeline {
               echo 'Clone the code from Github'
             }
         }
+		
+		
 		stage("Quality Gate Status Check")
 		{
+		environment
+		{
+		sonarqubeScannerHome = tool name: 'sonarserver', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+		}
 		steps
 		{
 		script{
