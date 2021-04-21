@@ -32,7 +32,7 @@ pipeline {
 		script{
 		withSonarQubeEnv(credentialsId: 'sonar-api-key')
 		{
-		bat "mvn sonar:sonar"
+		bat 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=95ae44b1a71dc1a6355c3d092b7ae182a862a149'
 		}
 		timeout(time:1,unit:'HOURS')
 		{
