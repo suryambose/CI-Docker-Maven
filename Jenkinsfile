@@ -30,7 +30,7 @@ pipeline {
 		steps
 		{
 		script{
-		withSonarQubeEnv('sonarserver')
+		withSonarQubeEnv(credentialsId: 'sonar-api-key')
 		{
 		bat "mvn sonar:sonar"
 		}
@@ -40,6 +40,7 @@ pipeline {
 		if(qg.status !='OK')
 		{
 		error "Pipeline aborted due to quality gate failure: $(qg.status)"
+		}
 		}
 		bat "mvn clean install"
 		}
