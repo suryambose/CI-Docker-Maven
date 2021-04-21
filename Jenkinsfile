@@ -31,8 +31,8 @@ stage('Sonarqube') {
         scannerHome = tool 'sonarserver'
     }
     steps {
-        withSonarQubeEnv('sonarserver') {
-            sh "${scannerHome}/bin/sonar-scanner"
+        withSonarQubeEnv(credentialsId: 'sonar-api-key') {
+            bat "${scannerHome}/bin/sonar-scanner"
         }
         timeout(time: 10, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
