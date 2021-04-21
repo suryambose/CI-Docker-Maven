@@ -45,7 +45,6 @@ pipeline {
 		bat "mvn clean install"
 		}
 		}
-		}
 		}	
         stage("Nexus Repository") {
             steps {
@@ -84,4 +83,5 @@ pipeline {
                 }
             }
         }
+  }
   }
