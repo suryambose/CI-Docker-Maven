@@ -23,19 +23,5 @@ pipeline {
   steps { credentialsId: 'github_credentials',url: 'https://github.com/suryambose/CI-Docker-Maven.git'
   }
   }
-stage('Sonarqube') {
-    environment {
-        scannerHome = tool 'sonarserver'
-    }
-    steps {
-        withSonarQubeEnv('sonarserver') {
-            bat "${scannerHome}/bin/windows-x86-64"
-        }
-        timeout(time: 10, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
-        }
-    }
+      }
 }
-	  }
-	  }
-		
