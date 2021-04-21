@@ -21,62 +21,17 @@ pipeline {
       stages {
         stage("clone code from Git"){
             steps{
-               git credentialsId: 'Gitlab', url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+               git credentialsId: 'github_credentials', url: 'https://github.com/suryambose/CI-Docker-Maven.git'
               echo 'Clone the code from Github'
             }
         }
+		stage("Code Checkout from GitLab") {
+  steps {
+   git branch: 'master',
+    credentialsId: 'github_credentials',
+    url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+  }
+      }
+	  }
+	  }
 		
-      stage("build & SonarQube analysis") {
-            agent any
-            steps {
-              withSonarQubeEnv('sonarserver') {
-                bat 'mvn clean package sonar:sonar'
-              }
-            }
-          }
-          stage("Quality Gate") {
-            steps {
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-          }  
-        stage("Nexus Repository") {
-            steps {
-                script {
-                    def pom = readMavenPom file: "pom.xml";
-					//newly added
-					def nexusRepoName=pom.version.endsWith("SNAPSHOT") ? "maven-snapshots" : "maven-releases"
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-                        nexusArtifactUploader(
-                                nexusVersion: NEXUS_VERSION,
-                                protocol: NEXUS_PROTOCOL,
-                                nexusUrl: NEXUS_URL,
-                                groupId: pom.groupId,
-                                version: pom.version,
-                               // repository: NEXUS_REPOSITORY_RELEASES,
-								repository: nexusRepoName,
-                                credentialsId: NEXUS_CREDENTIAL_ID, 
-                                artifacts: [
-                                    [artifactId: pom.artifactId, 
-                                     classifier: '',
-                                     file: artifactPath,
-                                     type: pom.packaging],
-                                    [artifactId: pom.artifactId,
-                                     classifier: '',
-                                     file: "pom.xml", 
-                                     type: "pom"]]);	
-                      
-                    } else {
-                        error "*** File: ${artifactPath}, could not be found";
-                    }
-                }
-            }
-        }
-  }
-  }
