@@ -26,13 +26,15 @@ pipeline {
             }
         }
 		//sonarqube
-		stage('SonarQube analysis') {
-		steps{
-    withSonarQubeEnv(credentialsId: '95ae44b1a71dc1a6355c3d092b7ae182a862a149',installationName: 'sonarserver')  { // You can override the credential to be used
-      bat 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000'
-    }
+		    stage('SonarQube analysis') 
+	   {
+	   steps{
+	   script{
+	   bat 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=95ae44b1a71dc1a6355c3d092b7ae182a862a149'
+     some block
+   }
   }
-  }
+}
 	  }
 	  }
 		
