@@ -32,14 +32,27 @@ pipeline {
     url: 'https://github.com/suryambose/CI-Docker-Maven.git'
   }
   }
-  stage("build & SonarQube analysis") {
-            agent any
-            steps {
-              withSonarQubeEnv('sonarserver') {
-                bat 'mvn clean package sonar:sonar'
-              }
-            }
-          }
+stage('Sonarqube') {
+    environment {
+        scannerHome = tool 'sonarserver'
+    }
+    steps {
+        withSonarQubeEnv('sonarserver') {
+            sh "${scannerHome}/bin/sonar-scanner"
+        }
+        timeout(time: 10, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
+ // stage("build & SonarQube analysis") {
+            //agent any
+            //steps {
+              //withSonarQubeEnv('sonarserver') {
+               // bat 'mvn clean package sonar:sonar'
+             // }
+           // }
+         // }
 	  }
 	  }
 		
