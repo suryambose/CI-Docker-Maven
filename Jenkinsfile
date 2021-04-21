@@ -19,12 +19,26 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "nexus"
     }
       stages {
-		stage("Code Checkout from GitHub") {
+        stage("clone code from Git"){
+            steps{
+               git credentialsId: 'github_credentials', url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+              echo 'Clone the code from Github'
+            }
+        }
+		stage("Code Checkout from GitLab") {
   steps {
    git branch: 'master',
     credentialsId: 'github_credentials',
     url: 'https://github.com/suryambose/CI-Docker-Maven.git'
   }
+  stage("build & SonarQube analysis") {
+            agent any
+            steps {
+              withSonarQubeEnv('sonarserver') {
+                bat 'mvn clean package sonar:sonar'
+              }
+            }
+          }
       }
 	  }
 	  }
