@@ -19,9 +19,14 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "nexus"
     }
       stages {
-		stage("Code Checkout from GitHub") {
-  steps { credentialsId: 'github_credentials',url: 'https://github.com/suryambose/CI-Docker-Maven.git'
-  }
-  }
-      }
-}
+		stages {
+        stage("clone code from Git"){
+            steps{
+               git credentialsId: 'git', url: 'https://github.com/suryambose/CI-Docker-Maven.git'
+               echo 'Clone the code from Github'
+            }
+        }
+	  }
+	  }
+	  }
+		
