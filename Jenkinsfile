@@ -2,7 +2,7 @@ pipeline{
 agent any
 stages
 {
-stages("git")
+stage("git")
 {
 steps
 {
